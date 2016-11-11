@@ -30,7 +30,7 @@ class Tex2png
     /**
      * Cache directory
      */
-    public $cacheDir = 'cache/tex';
+    public $cacheDir = 'uploads/cache/modules/tex2png';
 
     /**
      * Actual cache directory
@@ -95,6 +95,7 @@ class Tex2png
         $this->density = $density;
         $this->hash = sha1(serialize($datas));
         $this->cache = new Cache;
+        $this->cache->setCacheDirectory($this->cacheDir);
 
         return $this;
     }
@@ -198,7 +199,7 @@ class Tex2png
     public function dvi2png()
     {
         // XXX background: -bg 'rgb 0.5 0.5 0.5'
-        $command = static::DVIPNG . ' -q -T tight -D ' . $this->density . ' -o ' . $this->actualFile . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
+        $command = static::DVIPNG . ' -q -T tight -D ' . $this->density . ' -bg Transparent -o ' . $this->actualFile . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
 
         if (shell_exec($command) === null) {
             throw new \Exception('Unable to convert the DVI file to PNG (is dvipng installed?)');
@@ -224,7 +225,7 @@ class Tex2png
         }
         else
         {
-            return '<img class="formula" title="Formula" src="' . $this->getFile() . '">';
+            return '<img class="formula" title="Formula" src="' . $this->getFile() . '" />';
         }
     }
 
