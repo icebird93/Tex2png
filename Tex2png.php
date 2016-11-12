@@ -131,6 +131,8 @@ class Tex2png
                 $tex2png->dvi2png();
             } catch (\Exception $e) {
                 $tex2png->error = $e;
+                global $ice;
+                if($ice) $ice->l(\ICE::LOG_SYSTEM, 'Tex2png could not generate '.$this->formula.': '.$e->getMessage());
             }
 
             $tex2png->clean();
@@ -189,7 +191,7 @@ class Tex2png
         shell_exec($command);
 
         if (!file_exists($this->tmpDir . '/' . $this->hash . '.dvi')) {
-            throw new \Exception('Unable to compile LaTeX formula (is latex installed? check syntax)');
+            throw new \Exception('Unable to compile LaTeX formula');
         }
     }
 
@@ -201,8 +203,8 @@ class Tex2png
         // XXX background: -bg 'rgb 0.5 0.5 0.5'
         $command = static::DVIPNG . ' -q -T tight -D ' . $this->density . ' -bg Transparent -o ' . $this->actualFile . ' ' . $this->tmpDir . '/' . $this->hash . '.dvi 2>&1';
 
-        if (shell_exec($command) === null) {
-            throw new \Exception('Unable to convert the DVI file to PNG (is dvipng installed?)');
+        if (shell_exec($command) === null || filesize($this->actualFile)==0) {
+            throw new \Exception('Unable to convert the DVI file to PNG');
         }
     }
 
