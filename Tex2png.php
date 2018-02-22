@@ -30,7 +30,7 @@ class Tex2png
     /**
      * Cache directory
      */
-    public $cacheDir = 'cache/modules/tex2png';
+    public $cacheDir = \CONFIG::SITE_ROOT.'/cache/modules/tex2png';
 
     /**
      * Actual cache directory
