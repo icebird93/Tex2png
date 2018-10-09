@@ -42,7 +42,7 @@ class Tex2png
      * This is needed to write temporary files needed for
      * generation
      */
-    public $tmpDir = '/tmp';
+    public $tmpDir = '/tmp/modules/tex2png';
 
     /**
      * Target file
@@ -129,13 +129,14 @@ class Tex2png
 
                 // Converts the DVI file to PNG
                 $tex2png->dvi2png();
+
+                // Only cleanup on success to enable debugging
+                $tex2png->clean();
             } catch (\Exception $e) {
                 $tex2png->error = $e;
                 global $ice;
                 if($ice) $ice->l(\ICE::LOG_SYSTEM, 'Tex2png could not generate '.$this->formula.': '.$e->getMessage());
             }
-
-            $tex2png->clean();
         };
 
         if ($this->actualFile === null) {
